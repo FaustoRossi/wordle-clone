@@ -6,7 +6,35 @@ function App() {
 	const [guessHistory, setGuessHistory] = useState([]);
 	const [currentGuess, setCurrentGuess] = useState("");
 
-	const validGuesses = [];
+	function KeyList(props) {
+		return (
+			<div id="key-list">
+				{props.keyList.map((key) => {
+					return (
+						<button onClick={() => props.handleKeyboard(key)}>{key}</button>
+					);
+				})}
+			</div>
+		);
+	}
+
+	function KeyBoard(props) {
+		const { on, handleKeyboard } = props;
+		const keys = [
+			["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
+			["a", "s", "d", "f", "g", "h", "j", "k", "l"],
+			["Enter", "z", "x", "c", "v", "b", "n", "m", "Backspace"],
+		];
+		return (
+			<div id="keyboard">
+				{keys.map((keyList) => {
+					return (
+						<KeyList keyList={keyList} handleKeyboard={props.handleKeyboard} />
+					);
+				})}
+			</div>
+		);
+	}
 	const secret = "bliss";
 
 	// 1. Se encarga de caracter
@@ -40,18 +68,19 @@ function App() {
 		}
 	};
 
-	const handleKeyUp = (e) => {
-		if (e.key === "Backspace") {
+	const handleKeyboard = (value) => {
+		if (value === "Backspace") {
 			handleDelete();
-		} else if (e.key === "Enter") {
+		} else if (value === "Enter") {
 			handleEnter();
 
 			// este regex se asegura que solo tome letras  y no teclas como SHIFT, o BACKSPACE
-		} else if (/^[A-Za-z]$/.test(e.key)) {
-			handleChar(e.key);
+		} else if (/^[A-Za-z]$/.test(value)) {
+			handleChar(value);
 		}
-
-		console.log(e);
+	};
+	const handleKeyUp = (event) => {
+		handleKeyboard(event.key);
 	};
 
 	useEffect(() => {
@@ -73,6 +102,7 @@ function App() {
 				</div>
 				<div>{currentGuess}</div>
 			</main>
+			<KeyBoard handleKeyboard={handleKeyboard} />
 		</div>
 	);
 }
